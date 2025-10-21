@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Flight Countdown — ORD→DXB→DAC</title>
+  <link rel="manifest" href="/manifest.json">
   <style>
     :root{
   --bg1: #101827;
@@ -39,8 +40,11 @@
     }
       overflow-x:hidden;
     }
-    .wrap{max-width:980px;margin:0 auto;padding:32px}
+  .wrap{max-width:980px;margin:0 auto;padding:16px}
     header{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    @media (max-width: 600px){
+      header{flex-direction:column;align-items:flex-start;gap:8px;}
+    }
     .title{font-weight:700;font-size: clamp(22px, 3vw, 34px)}
     .sub{color:var(--muted);font-size:14px}
     .card{
@@ -58,11 +62,20 @@
     }
     .row{display:grid; grid-template-columns: 1fr; gap:18px}
     @media (min-width: 840px){ .row{grid-template-columns: 1.1fr .9fr}}
+    @media (max-width: 600px){
+      .row{grid-template-columns:1fr;gap:10px}
+      .card{padding:14px;}
+    }
 
     .countdown{
       display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:14px; margin-top:16px
     }
-    .chip{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--card-2);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px 10px}
+    @media (max-width: 480px){
+      .countdown{grid-template-columns:2fr 2fr;gap:10px;}
+      .chip{padding:12px 6px;}
+      .num{font-size:clamp(22px,8vw,32px);}
+    }
+  .chip{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--card-2);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px 10px;min-width:60px;min-height:60px;}
     .num{font-variant-numeric: tabular-nums; font-weight:800; font-size: clamp(26px, 6vw, 46px)}
 .num{
   color: var(--accent);
@@ -74,13 +87,17 @@
     .seg{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
     .pill {
       border:1.5px solid var(--accent);
-      padding:8px 12px;
-      border-radius:12px;
+      padding:14px 18px;
+      border-radius:16px;
       cursor:pointer;
       background: rgba(96,165,250,.09);
       color:var(--accent);
       font-weight:600;
+      font-size:1.1em;
       transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      min-width:120px;
+      min-height:44px;
+      text-align:center;
     }
     .pill.active {
       outline:2.5px solid var(--accent-2);
@@ -89,6 +106,9 @@
       color:#062b1f;
     }
     .meta{display:grid;grid-template-columns: 1fr 1fr; gap:12px; margin-top:14px}
+    @media (max-width: 480px){
+      .meta{grid-template-columns:1fr;gap:8px;}
+    }
     .meta .k{color:var(--muted);font-size:12px}
     .meta .v{font-weight:600}
 
@@ -104,19 +124,23 @@
   text-shadow: 0 2px 8px rgba(52,211,153,.12);
 }
 
-    .grid2{display:grid;grid-template-columns:1fr;gap:14px}
-    @media (min-width: 560px){.grid2{grid-template-columns:1fr 1fr}}
+  .grid2{display:grid;grid-template-columns:1fr;gap:14px}
+  @media (min-width: 560px){.grid2{grid-template-columns:1fr 1fr}}
+  @media (max-width: 480px){.grid2{grid-template-columns:1fr;gap:8px;}}
 
     button.inline{
       background: linear-gradient(90deg, var(--accent), var(--accent-2));
       color:#062b1f;
       border:none;
-      padding:8px 12px;
-      border-radius:10px;
+      padding:14px 18px;
+      border-radius:14px;
       font-weight:700;
       cursor:pointer;
       box-shadow: 0 2px 8px rgba(96,165,250,.12);
       transition: background 0.2s, box-shadow 0.2s;
+      font-size:1.1em;
+      min-width:120px;
+      min-height:44px;
     }
     button.inline:hover{
       background: linear-gradient(90deg, var(--accent-2), var(--accent));
@@ -153,27 +177,19 @@
     </header>
 
     <div class="row">
-      <!-- Map Card -->
-      <section class="card" style="margin-top:18px">
-        <div class="big">Route Map</div>
-        <div id="map" style="height:340px; border-radius:16px; margin-top:12px;"></div>
-        <div class="small" style="margin-top:8px">Flight paths and airport details are shown below.</div>
-      </section>
-      <!-- Left: Countdown Card -->
-      <section class="card">
+      <!-- Countdown Card (First on mobile) -->
+      <section class="card countdown-card">
         <div class="seg" id="segmentTabs">
           <div class="pill active" data-key="ord_depart">ORD Departure</div>
           <div class="pill" data-key="dxb_depart">DXB Departure</div>
           <div class="pill" data-key="dac_arrive">DAC Arrival</div>
         </div>
-
         <div class="countdown" aria-live="polite">
           <div class="chip"><div class="num" id="dd">–</div><div class="lbl">Days</div></div>
           <div class="chip"><div class="num" id="hh">–</div><div class="lbl">Hours</div></div>
           <div class="chip"><div class="num" id="mm">–</div><div class="lbl">Minutes</div></div>
           <div class="chip"><div class="num" id="ss">–</div><div class="lbl">Seconds</div></div>
         </div>
-
         <div class="meta">
           <div>
             <div class="k">Target (local to event)</div>
@@ -192,19 +208,16 @@
             <div class="v" id="terminal">—</div>
           </div>
         </div>
-
         <div style="margin:14px 0 6px" class="small">Progress to Bangladesh (from ORD departure → DAC arrival)</div>
         <div class="progress" title="Trip progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
           <i id="progressFill"></i>
         </div>
-
         <div class="footer">
           Tip: this page adjusts to your computer's timezone automatically. Add it to your phone's home screen for quick access.
         </div>
       </section>
-
-      <!-- Right: Details / Notes Card -->
-      <aside class="card">
+      <!-- Itinerary Card (Second on mobile) -->
+      <aside class="card itinerary-card">
         <div class="big">Itinerary</div>
         <div class="grid2" style="margin-top:10px">
           <div>
@@ -226,6 +239,19 @@
         </audio>
         <p class="small" style="opacity:.8;margin-top:12px">Note: If your airline updates times, edit the code dates below or switch the target using the chips above.</p>
       </aside>
+      <!-- Map Card (Last on mobile) -->
+      <section class="card map-card" style="margin-top:18px">
+        <div class="big">Route Map</div>
+        <div id="map" style="height:340px; border-radius:16px; margin-top:12px;"></div>
+        <div class="small" style="margin-top:8px">Flight paths and airport details are shown below.</div>
+      </section>
+    /* Mobile card order: countdown, itinerary, map */
+    @media (max-width: 600px){
+      .row{display:flex;flex-direction:column;}
+      .countdown-card{order:1;}
+      .itinerary-card{order:2;}
+      .map-card{order:3;}
+    }
     </div>
   </div>
 
