@@ -245,13 +245,33 @@
         <div id="map" style="height:340px; border-radius:16px; margin-top:12px;"></div>
         <div class="small" style="margin-top:8px">Flight paths and airport details are shown below.</div>
       </section>
-    /* Mobile card order: countdown, itinerary, map */
-    @media (max-width: 600px){
-      .row{display:flex;flex-direction:column;}
-      .countdown-card{order:1;}
-      .itinerary-card{order:2;}
-      .map-card{order:3;}
-    }
+      </div>
+      <style>
+      button.inline:hover{
+        background: linear-gradient(90deg, var(--accent-2), var(--accent));
+        box-shadow: 0 4px 16px rgba(52,211,153,.18);
+      }
+      /* Mobile card order: countdown, itinerary, map */
+      @media (max-width: 600px){
+        .row{display:flex;flex-direction:column;}
+        .countdown-card{order:1;}
+        .itinerary-card{order:2;}
+        .map-card{order:3;}
+      }
+      .particles {
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        pointer-events: none;
+        z-index: 0;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block;
+        border: none;
+        box-sizing: border-box;
+        opacity: 0.7;
+        filter: blur(0.5px) brightness(0.95);
+      }
+      </style>
     </div>
   </div>
 
